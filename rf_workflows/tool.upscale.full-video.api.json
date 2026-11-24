@@ -1,0 +1,202 @@
+{
+  "1": {
+    "inputs": {
+      "video": "",
+      "force_rate": 0,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": 0,
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "None"
+    },
+    "class_type": "VHS_LoadVideoPath",
+    "_meta": {
+      "title": "INPUT VIDEO (URL)"
+    }
+  },
+  "2": {
+    "inputs": {
+      "video_info": [
+        "1",
+        3
+      ]
+    },
+    "class_type": "VHS_VideoInfo",
+    "_meta": {
+      "title": "Video Info"
+    }
+  },
+  "4": {
+    "inputs": {
+      "unet_name": "relayvsr_x4_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "RelayVSR Model"
+    }
+  },
+  "5": {
+    "inputs": {
+      "vae_name": "relayvsr_flash_vae_x4_fp32.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "RelayVSR Flash VAE (same scale)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "images": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "RelayVSRConditioning",
+    "_meta": {
+      "title": "RelayVSRConditioning"
+    }
+  },
+  "7": {
+    "inputs": {
+      "seed": 42,
+      "steps": 1,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "latent_image": [
+        "6",
+        1
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler (1 step, CFG 1)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "detail": 1,
+      "vae": [
+        "5",
+        0
+      ],
+      "samples": [
+        "7",
+        0
+      ],
+      "images": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "VSRDecode",
+    "_meta": {
+      "title": "VSR Decode"
+    }
+  },
+  "10": {
+    "inputs": {
+      "frame_rate": [
+        "2",
+        5
+      ],
+      "loop_count": 0,
+      "filename_prefix": "RelayVSR/upscaled",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 14,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "21",
+        0
+      ],
+      "audio": [
+        "1",
+        2
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "UPSCALED VIDEO (saved)"
+    }
+  },
+  "20": {
+    "inputs": {
+      "sharpen_radius": 1,
+      "sigma": 0.5,
+      "alpha": 0.3,
+      "image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "ImageSharpen",
+    "_meta": {
+      "title": "Sharpen (subtle)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "batch_size": 4096,
+      "images": [
+        "20",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Merge back (4096)"
+    }
+  },
+  "22": {
+    "inputs": {
+      "upscale_method": "area",
+      "width": 1280,
+      "height": 720,
+      "crop": "center",
+      "image": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Cover and center-crop to the target size"
+    }
+  },
+  "23": {
+    "inputs": {
+      "batch_size": 64,
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Split into batches (64)"
+    }
+  }
+}
