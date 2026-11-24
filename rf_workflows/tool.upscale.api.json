@@ -48,69 +48,84 @@
   },
   "6": {
     "inputs": {
-      "model": [
-        "4",
-        0
-      ],
-      "images": [
-        "1",
-        0
-      ]
-    },
-    "class_type": "RelayVSRConditioning",
-    "_meta": {
-      "title": "RelayVSRConditioning"
-    }
-  },
-  "7": {
-    "inputs": {
+      "target_long_side": 1280,
+      "chunk_len": 241,
+      "chunk_overlap": 8,
       "seed": 42,
-      "steps": 1,
-      "cfg": 1,
-      "sampler_name": "euler",
-      "scheduler": "simple",
-      "denoise": 1,
+      "detail": 1,
       "model": [
         "4",
         0
       ],
-      "positive": [
-        "6",
-        0
-      ],
-      "negative": [
-        "6",
-        0
-      ],
-      "latent_image": [
-        "6",
-        1
-      ]
-    },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "KSampler (1 step, CFG 1)"
-    }
-  },
-  "8": {
-    "inputs": {
-      "detail": 1,
       "vae": [
         "5",
         0
       ],
-      "samples": [
-        "7",
-        0
-      ],
       "images": [
         "1",
         0
       ]
     },
-    "class_type": "VSRDecode",
+    "class_type": "RelayVSRUpscaleNative",
     "_meta": {
-      "title": "VSR Decode"
+      "title": "RelayVSR Upscale (native, chunked)"
+    }
+  },
+  "23": {
+    "inputs": {
+      "batch_size": 64,
+      "images": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Split into batches (64)"
+    }
+  },
+  "22": {
+    "inputs": {
+      "upscale_method": "area",
+      "width": 1280,
+      "height": 720,
+      "crop": "center",
+      "image": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "ImageScale",
+    "_meta": {
+      "title": "Cover and center-crop to the target size"
+    }
+  },
+  "20": {
+    "inputs": {
+      "sharpen_radius": 1,
+      "sigma": 0.4,
+      "alpha": 0.2,
+      "image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "ImageSharpen",
+    "_meta": {
+      "title": "Sharpen (subtle)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "batch_size": 4096,
+      "images": [
+        "20",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Merge back (4096)"
     }
   },
   "10": {
@@ -140,63 +155,6 @@
     "class_type": "VHS_VideoCombine",
     "_meta": {
       "title": "UPSCALED VIDEO (saved)"
-    }
-  },
-  "20": {
-    "inputs": {
-      "sharpen_radius": 1,
-      "sigma": 0.5,
-      "alpha": 0.3,
-      "image": [
-        "22",
-        0
-      ]
-    },
-    "class_type": "ImageSharpen",
-    "_meta": {
-      "title": "Sharpen (subtle)"
-    }
-  },
-  "21": {
-    "inputs": {
-      "batch_size": 4096,
-      "images": [
-        "20",
-        0
-      ]
-    },
-    "class_type": "RebatchImages",
-    "_meta": {
-      "title": "Merge back (4096)"
-    }
-  },
-  "22": {
-    "inputs": {
-      "upscale_method": "area",
-      "width": 1280,
-      "height": 720,
-      "crop": "center",
-      "image": [
-        "23",
-        0
-      ]
-    },
-    "class_type": "ImageScale",
-    "_meta": {
-      "title": "Cover and center-crop to the target size"
-    }
-  },
-  "23": {
-    "inputs": {
-      "batch_size": 64,
-      "images": [
-        "8",
-        0
-      ]
-    },
-    "class_type": "RebatchImages",
-    "_meta": {
-      "title": "Split into batches (64)"
     }
   }
 }

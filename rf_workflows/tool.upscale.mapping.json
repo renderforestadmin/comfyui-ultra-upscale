@@ -6,6 +6,13 @@
       "video"
     ]
   ],
+  "targetLongSide": [
+    [
+      "6",
+      "inputs",
+      "target_long_side"
+    ]
+  ],
   "targetWidth": [
     [
       "22",
