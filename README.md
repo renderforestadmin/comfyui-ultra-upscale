@@ -120,4 +120,13 @@ For **generative** upscalers — SeedVR2, FlashVSR — that paint texture everyw
 `base_mix` 0.15 — source everywhere · `protect_soft_areas` 0.75 — how much source returns on soft areas. Also outputs the `detail_mask` it used.
 
 ## License
+## RelayVSR Upscale (native) (third node)
+
+`relayvsr_native.py` is Hayk's `ComfyUI-RelayVSR-Native` node (`RelayVSRUpscaleNative`), shipped here unchanged so
+installing this repo once gives the production `tool.upscale` workflow every node it needs. `model` (Load Diffusion
+Model → `relayvsr_x4_int8_convrot`) + `vae` (Load VAE → `relayvsr_flash_vae_x4_fp32`) + `images` → `images` resized
+to `target_long_side`. It runs the core RelayVSR path (conditioning → 1-step sampler → VSR decode) in chunks of
+`chunk_len` frames (crossfaded over `chunk_overlap`), so only one chunk's 4x frames are held at a time. Needs a
+ComfyUI with the core RelayVSR support (`comfy.ldm.wan.model_vsr`); on an older ComfyUI the node is skipped.
+
 Node code: MIT. `nvidia-vfx` is distributed by NVIDIA under its own license.
